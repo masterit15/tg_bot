@@ -1,3 +1,5 @@
+const vosk = require('vosk');
+
 class OpenAI {
   constructor(){
 

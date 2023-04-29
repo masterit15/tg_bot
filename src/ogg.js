@@ -5,6 +5,8 @@ import { createWriteStream } from "fs";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 import { removeFiles } from "./utils.js";
+
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 class OGGConverter {
   constructor() {
@@ -12,10 +14,12 @@ class OGGConverter {
   }
   async toMP3(input, output) {
     try {
-      const outputPath = resolve(dirname(input), `${output}.mp3`);
+      const outputPath = resolve(dirname(input), `${output}.wav`);
       return new Promise((resolve, reject) => {
         ffmpeg(input)
           .inputOption("-t 30")
+          .audioCodec('pcm_s16le')
+		      .format('wav')
           .output(outputPath)
           .on("end", () => {
             resolve(outputPath);
@@ -25,7 +29,7 @@ class OGGConverter {
           .run();
       });
     } catch (error) {
-      console.log("Error toMP3", error);
+      console.log("Error toWAV", error);
     }
   }
   async create(url, filename) {

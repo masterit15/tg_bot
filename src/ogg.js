@@ -12,7 +12,7 @@ class OGGConverter {
   constructor() {
     ffmpeg.setFfmpegPath(installer.path);
   }
-  async toMP3(input, output) {
+  async toWAV(input, output) {
     try {
       const outputPath = resolve(dirname(input), `${output}.wav`);
       return new Promise((resolve, reject) => {

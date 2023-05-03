@@ -3,11 +3,8 @@ import wav from'wav'
 import { Readable } from 'stream'
 import fs from "fs";
 const MODEL_PATH = "./vosk-model/vosk-model-small-ru-0.22"
-const SPEAKER_MODEL_PATH = "./vosk-model/vosk-model-ru-0.22"
 
-
-
-
+vosk.setLogLevel(0);
 class OpenAI {
   constructor(){
 
@@ -25,7 +22,7 @@ class OpenAI {
     if (process.argv.length > 2)
       input = process.argv[2]
     
-    vosk.setLogLevel(0);
+    
     const model = new vosk.Model(MODEL_PATH);
     const wfReader = new wav.Reader();
     const wfReadable = new Readable().wrap(wfReader);
@@ -47,7 +44,12 @@ class OpenAI {
           //       console.log('==============================================',JSON.stringify(rec.partialResult(), null, 4));
           // }
       }
-      resolve(rec.finalResult(rec)?.alternatives[0]?.text)
+      const res = rec.finalResult(rec).alternatives[0]
+      if(res.text){
+        resolve(res.text)
+      }else{
+        resolve('К сожалению не удалось распознать голосовое сообщение!')
+      }
       rec.free();
     });
     fs.createReadStream(input, {'highWaterMark': 4096}).pipe(wfReader).on('finish', 
